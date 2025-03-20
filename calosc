@@ -1,0 +1,404 @@
+import random
+import pygame
+import sys
+jakaakcja = 0
+x=0
+test = 0
+pole = 500
+odl = 0
+ktora = None
+running = True
+WIDTH, HEIGHT = 1900, 900
+SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("cos")
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+wynik = 0
+                 
+def tasowanie():
+    print("test zrzucanie")
+    deckcopy = odrzucone.copy()
+    odrzucone.clear()
+    t.clear()
+    for i in range(len(deckcopy)):
+        t.append(i+1)
+    random.shuffle(t)
+    print(t,deckcopy)
+
+
+
+def dobieraniereki():
+    print("len =", len(deckcopy))
+    if len(deckcopy)<5:
+        
+        for i in range(len(deck)):
+            try:
+                reka[len(reka)+1] = deckcopy.pop(int(t[i]))
+                t[i] = 0
+                
+            except:
+                pass
+        tasowanie()
+    while len(reka)<5:
+        
+        for i in range(len(deck)):
+            try:
+                if len(reka) ==5:
+                    break
+                reka[len(reka)+1] = deckcopy.pop(int(t[i]))
+                t[i] =0
+                print("test")
+                
+            except:
+                pass
+               
+        if len(reka) == 5:
+            break
+def zrzucanie():
+    for i in range(len(deck)):
+        try:
+            odrzucone[len(odrzucone)+1] = reka[i+1]
+            odrzucone[len(odrzucone)+1] = zagrane[i+1]
+           
+        except:
+            pass
+    reka.clear()
+    zagrane.clear()
+def dobieranie():
+    
+    for i in range(int(len(t))):
+        if t[i] !=0:
+            
+            for j in range(10):
+                try:
+                    test = reka[j+1]
+                    
+
+                except:
+                    
+                    print("dobierasz karte: " ,deckcopy[int(t[i])][0])
+                    reka[j+1]=deckcopy.pop(int(t[i]))
+                    
+                    break
+            
+            t[i] = 0
+            
+            
+            break
+def cosiedzieje(o):
+    
+
+    akcjadod = -1
+
+    if o ==1:
+        falsz = 0
+        akcjadod += 2
+        print()
+        print("zagrales karte 'wioska'. Dostajesz:")
+        print("+2 akcje")
+        print("+1 karte")
+
+        for i in range(int(len(t))):
+            if t[i]!=0:
+                falsz+=1
+        if falsz>0:
+           
+            dobieranie()
+
+
+                
+        if falsz==0:
+            tasowanie()
+            dobieranie()
+        for i in range(10):
+            
+            try:
+                if reka[i+1][0] == "wioska":
+                    
+
+                    zagrane[int(len(zagrane))+1] = reka.pop(i+1)
+                    
+                   
+                    break
+            except:
+                pass
+                
+
+    return akcjadod
+
+
+
+            
+
+def akcjacheck(akcheck,pcheck,zcheck):
+    a = akcheck
+    p = pcheck
+    z = zcheck
+    
+    k=0
+    
+    
+    while True:
+        check =0
+        
+        ile = 0
+        
+        try:
+                        
+                        print("twoja reka to:")
+                        print()
+                        for i in range(10):
+                            try:
+                                print(reka[i][0],end=" ")
+                            except:
+                                pass
+                        for i in range(10):
+                            try:
+                                if reka[i+1][2]=="akcja":
+                                    check+=1
+                                    
+                            except:
+                                pass
+                        
+                        if check==0:
+                            print()
+                            print("nie zadnych akcji")
+                            break
+                        
+                        for i in range(10):
+                            try:
+                                if reka[i+1][2]=="akcja":
+                                    print()
+                                    print("mozliwe akcje to: ")
+                                    break
+                            except:
+                                pass
+                        
+                        
+                        
+                        for u in range(10):
+                                try:    
+                                    
+                                    if reka[u+1][2] == "akcja":
+                                        print(reka[u+1][0],end=" ")
+                                        
+                                        ile+=1
+                                        
+                                except:pass
+                        if ile==0:
+                            print("nie masz na rece zadnych akcji")
+                            break
+                        print()
+                        print("masz",a,"akcje")
+                        print("czy chcesz zagrac akcje?")
+                        wynik = str(input("tak('t')/nie('n')"))
+                        if wynik =="t":
+                            jakaakcja = input("podaj nazwe akcji")
+                            x=0
+                            
+                            while x==0:
+                                for i in range(10):
+                                    print(jakaakcja)
+                                    if karty[i+1][0] == str(jakaakcja):
+                                        x=1
+                                        coto = i+1
+                                        
+                           
+                           
+                                        break
+
+
+                            a = a+ cosiedzieje(coto)
+                            
+                    
+
+        
+                        if wynik == "n":
+                            break
+                        k+=1
+                        
+        except:
+                        pass
+            
+
+    
+    return a,p,z
+
+def zakupchceck(z):
+    zchech = z
+    
+    for i in range(10):
+        try:
+            
+            if reka[i][2] == "skarb":
+                
+                zchech += int(reka[i][3]) 
+                
+        except:
+            pass
+    return zchech
+def zakupczy(a,p,z):
+    akcje =a
+    pieniadze = p
+    zakupy = z
+    ok = 1
+    ok1=1
+    koniec =" "
+    strike = 0
+    ktora = 0
+    while zakupy>0:
+        
+        print("masz ", pieniadze,"pieniedzy. Czy chcesz cos kupic?")
+        while ok1 == 1:
+            czy = str(input("tak('t')/nie('n')"))
+            if czy =="t" or czy =="n":
+                ok1 =0
+            else:
+                print("wystapil blad; sprubuj ponownie")
+        if czy=="n":
+            break
+        for i in range(int(len(karty))):
+            print(karty[i+1][0], ",koszt :", karty[i+1][1])
+        while ok == 1:
+            co = str(input("Co chcesz kupic?"))
+            for j in range(int(len(karty))):
+                if co == karty[j+1][0]:
+                    deck[int(len(deck))+1] = karty[j+1]
+                    odrzucone[int(len(odrzucone))+1] = karty[j+1]
+                    ktora +=int(karty[j+1][1])
+                    zakupy-=1
+                    ok = 0
+                elif int(karty[i+1][1])>pieniadze:
+                    print("nie masz wystarczajacej ilosci pieniadzy.")
+                    koniec = str(input("wpisz 'stop' jezeli nie chcesz kupic innej karty"))
+                    if koniec == "stop":
+                        ok ==0
+                        break
+                else:
+                    strike+=1
+                
+                    
+        if koniec =="stop":
+            break
+    if zakupy==0:
+        print("nie masz juz zakupow")
+    pieniadze -=ktora
+    return akcje,pieniadze,zakupy
+
+##################################################################################
+
+
+
+
+
+
+
+class Square:
+    def __init__(self, x, y, sx = 100, sy = 150, idi =0):
+        self.rect = pygame.Rect(x, y, sx,sy)
+        self.color = RED
+        self.idi = idi
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.color, self.rect)
+
+    def handle_click(self, pos):
+        if self.rect.collidepoint(pos):
+            # Coś się dzieje -> zmiana koloru
+            wynik =square.idi
+            return square.idi
+        else :
+            return 0
+
+# Funkcja do tworzenia kwadratów
+def create_squares(count):
+    squares = []
+    pol = []
+    odl = 10
+    for i in range(count):
+        x = 850 + ((-1)**i)*i//2*(odl + 100) 
+        
+       
+        pol.append(x)
+        pol.sort()
+    for i in range(count):
+
+        squares.append(Square(pol[i], 700, idi=i+1))
+    return squares
+
+
+
+clock = pygame.time.Clock()
+
+   
+
+
+
+###################################################################################
+
+karty = {
+    1:["wioska","3","akcja"],
+
+
+    2:["miedziaki","0","skarb","1"],
+
+    3:["posiadlosci","2","zwyciestwo","1"]
+    }
+deck ={}
+for i in range(1,8):
+    deck[i] = karty[2]
+for i in range(8,11):
+    deck[i]=karty[3]
+
+deckcopy = {}
+for i in range(len(deck)):
+    deckcopy[i+1]  = deck[i+1]
+dlugosc = len(deck)
+reka = {}
+odrzucone = {}
+zagrane = {}
+akcja = 0
+pieniadz = 0
+t=[]
+
+
+dlugosc = len(deckcopy)
+t.clear()
+for i in range(dlugosc):
+
+        t.append(i+1)
+random.shuffle(t)
+print(t)
+dobieraniereki()
+reka[1] = karty[1]
+squares = create_squares(len(reka))
+print(reka)
+while running:
+        SCREEN.fill(WHITE)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            # Obsługa kliknięcia myszką
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+                for square in squares:
+                    
+                    
+                    ktora = square.handle_click(mouse_pos)
+                    if ktora == 0:
+                        pass
+                    else:
+                        print (reka[ktora ])
+
+        # Rysowanie kwadratów
+        for square in squares:
+            square.draw(SCREEN)
+
+        pygame.display.flip()
+        clock.tick(60)
+
+  
+
