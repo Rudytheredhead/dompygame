@@ -1,301 +1,247 @@
-import random
 import pygame
+import random
+import time
 import sys
-jakaakcja = 0
-x=0
-test = 0
-pole = 500
-odl = 0
-ktora = None
-running = True
-WIDTH, HEIGHT = 1900, 900
-SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("cos")
+
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+BLACK = (0,0,0)
 wynik = 0
-                 
+
+
+karty = {
+    1:["wioska","3","akcja"],
+    2:["piwnica","2","akcja"],
+
+
+    3:["miedziaki","0","skarb","1"],
+
+    4:["posiadlosci","2","zwyciestwo","1"]
+
+
+    }
+
+odrzucone = {}
+zagrane = {}
+t=[]
+deck ={}
+reka = {}
+for i in range(1,8):
+    deck[i] = karty[3]
+for i in range(8,11):
+    deck[i]=karty[4]
+nacisniete = []
+
+
+
+deckcopy = deck.copy()
+dlugosc = len(deckcopy)
+t.clear()
+for i in range(len(deck)):
+       
+        t.append(i+1)
+
 def tasowanie():
-    print("test zrzucanie")
+    
     deckcopy = odrzucone.copy()
     odrzucone.clear()
-    t.clear()
-    for i in range(len(deckcopy)):
-        t.append(i+1)
+    sort(deck)
+    
+    dl = len(t)
+    for i in range(len(deck),dl):
+       
+       x = t.pop(len(deck)) 
     random.shuffle(t)
-    print(t,deckcopy)
-
-
-
-def dobieraniereki():
-    print("len =", len(deckcopy))
-    if len(deckcopy)<5:
-        
-        for i in range(len(deck)):
-            try:
-                reka[len(reka)+1] = deckcopy.pop(int(t[i]))
-                t[i] = 0
-                
-            except:
-                pass
-        tasowanie()
-    while len(reka)<5:
-        
-        for i in range(len(deck)):
-            try:
-                if len(reka) ==5:
-                    break
-                reka[len(reka)+1] = deckcopy.pop(int(t[i]))
-                t[i] =0
-                print("test")
-                
-            except:
-                pass
-               
-        if len(reka) == 5:
-            break
-def zrzucanie():
-    for i in range(len(deck)):
+    for i in range(len(deckcopy)):
+        t.append(len(deck)+i+1)
+    random.shuffle(t)
+    sort(deck)
+    dlugosc = len(deck)
+    for i in range(len(deckcopy)):
+       
+        deck[i+dlugosc+1] = deckcopy[i+1]
+    
+def sort(slow):
+    for i in range(200):
         try:
-            odrzucone[len(odrzucone)+1] = reka[i+1]
-            odrzucone[len(odrzucone)+1] = zagrane[i+1]
-           
+            test = slow[i+1]
         except:
-            pass
-    reka.clear()
-    zagrane.clear()
-def dobieranie():
-    
-    for i in range(int(len(t))):
-        if t[i] !=0:
-            
-            for j in range(10):
-                try:
-                    test = reka[j+1]
-                    
-
-                except:
-                    
-                    print("dobierasz karte: " ,deckcopy[int(t[i])][0])
-                    reka[j+1]=deckcopy.pop(int(t[i]))
-                    
-                    break
-            
-            t[i] = 0
-            
-            
-            break
-def cosiedzieje(o):
-    
-
-    akcjadod = -1
-
-    if o ==1:
-        falsz = 0
-        akcjadod += 2
-        print()
-        print("zagrales karte 'wioska'. Dostajesz:")
-        print("+2 akcje")
-        print("+1 karte")
-
-        for i in range(int(len(t))):
-            if t[i]!=0:
-                falsz+=1
-        if falsz>0:
-           
-            dobieranie()
-
-
-                
-        if falsz==0:
-            tasowanie()
-            dobieranie()
-        for i in range(10):
-            
             try:
-                if reka[i+1][0] == "wioska":
-                    
-
-                    zagrane[int(len(zagrane))+1] = reka.pop(i+1)
-                    
-                   
-                    break
+                test =slow[i+2]
             except:
-                pass
-                
-
-    return akcjadod
-
-
-
-            
-
-def akcjacheck(akcheck,pcheck,zcheck):
-    a = akcheck
-    p = pcheck
-    z = zcheck
-    
-    k=0
-    
-    
-    while True:
-        check =0
-        
-        ile = 0
-        
-        try:
-                        
-                        print("twoja reka to:")
-                        print()
-                        for i in range(10):
-                            try:
-                                print(reka[i][0],end=" ")
-                            except:
-                                pass
-                        for i in range(10):
-                            try:
-                                if reka[i+1][2]=="akcja":
-                                    check+=1
-                                    
-                            except:
-                                pass
-                        
-                        if check==0:
-                            print()
-                            print("nie zadnych akcji")
-                            break
-                        
-                        for i in range(10):
-                            try:
-                                if reka[i+1][2]=="akcja":
-                                    print()
-                                    print("mozliwe akcje to: ")
-                                    break
-                            except:
-                                pass
-                        
-                        
-                        
-                        for u in range(10):
-                                try:    
-                                    
-                                    if reka[u+1][2] == "akcja":
-                                        print(reka[u+1][0],end=" ")
-                                        
-                                        ile+=1
-                                        
-                                except:pass
-                        if ile==0:
-                            print("nie masz na rece zadnych akcji")
-                            break
-                        print()
-                        print("masz",a,"akcje")
-                        print("czy chcesz zagrac akcje?")
-                        wynik = str(input("tak('t')/nie('n')"))
-                        if wynik =="t":
-                            jakaakcja = input("podaj nazwe akcji")
-                            x=0
-                            
-                            while x==0:
-                                for i in range(10):
-                                    print(jakaakcja)
-                                    if karty[i+1][0] == str(jakaakcja):
-                                        x=1
-                                        coto = i+1
-                                        
-                           
-                           
-                                        break
-
-
-                            a = a+ cosiedzieje(coto)
-                            
-                    
-
-        
-                        if wynik == "n":
-                            break
-                        k+=1
-                        
-        except:
-                        pass
-            
-
-    
-    return a,p,z
-
-def zakupchceck(z):
-    zchech = z
-    
-    for i in range(10):
-        try:
-            
-            if reka[i][2] == "skarb":
-                
-                zchech += int(reka[i][3]) 
-                
-        except:
-            pass
-    return zchech
-def zakupczy(a,p,z):
-    akcje =a
-    pieniadze = p
-    zakupy = z
-    ok = 1
-    ok1=1
-    koniec =" "
-    strike = 0
-    ktora = 0
-    while zakupy>0:
-        
-        print("masz ", pieniadze,"pieniedzy. Czy chcesz cos kupic?")
-        while ok1 == 1:
-            czy = str(input("tak('t')/nie('n')"))
-            if czy =="t" or czy =="n":
-                ok1 =0
+                czy ="nie"
             else:
-                print("wystapil blad; sprubuj ponownie")
-        if czy=="n":
+                czy = "tak"
+            if czy == "tak":
+                slow [i+1] = slow.pop(i+2)
+
+def dobieranie(n):
+    
+    sort(reka)
+    j = 0
+    while j <n:
+        if len(t)== 0:
+            print("zabraklo kart")
             break
-        for i in range(int(len(karty))):
-            print(karty[i+1][0], ",koszt :", karty[i+1][1])
-        while ok == 1:
-            co = str(input("Co chcesz kupic?"))
-            for j in range(int(len(karty))):
-                if co == karty[j+1][0]:
-                    deck[int(len(deck))+1] = karty[j+1]
-                    odrzucone[int(len(odrzucone))+1] = karty[j+1]
-                    ktora +=int(karty[j+1][1])
-                    zakupy-=1
-                    ok = 0
-                elif int(karty[i+1][1])>pieniadze:
-                    print("nie masz wystarczajacej ilosci pieniadzy.")
-                    koniec = str(input("wpisz 'stop' jezeli nie chcesz kupic innej karty"))
-                    if koniec == "stop":
-                        ok ==0
-                        break
-                else:
-                    strike+=1
+       
+        for i in range(len(t)):
+            if t[i] !=0:
                 
+                reka[len(reka)+1] = deck.pop(int(t[i]))
+                t[i] = 0
+                j+=1
+                print("dobrano karte")
+                break
+            elif i ==len(t)-1:
+                
+                tasowanie()
+                print("koniec tasowania")
+    squares = create_squares(len(reka))
+                
+
+def zrzucanie(co):
+    sort(zagrane)
+    for i in  range(len(zagrane)):
+        odrzucone[len(odrzucone)+1] = zagrane[i+1]
+    sort(reka)
+    dlugosc = len(reka)
+    if co == "dozakupu":
+        
+        for i in range(dlugosc):
+            if reka[i+1][2]=="akcja" or reka[i+1][2]== "zwyciestwo":
+                odrzucone[len(odrzucone)+1] = reka.pop(i+1)
+        sort(reka)
+    if co =="cala":
+        for i in range(dlugosc):
+            print(reka,i)
+            odrzucone[len(odrzucone)+1] = reka[i+1]
+        reka.clear()
+    
+    zagrane.clear()
+    squares.clear()
+
+def czyakjca():
+    ilekart = 0
+    ileakcji = 0
+    for i in range(len(reka)):
+        try:
+            if reka [i+1][2] == "akcja":
+                ileakcji = ileakcji +1
+                ilekart = ilekart +1
+        except:
+            pass
+
+    return ileakcji 
+
+def sprpieniedzy():
+    sort(reka)
+    dodpien = 0
+    for i in range(len(reka)):
+        if reka[i+1][2] == "skarb":
+            dodpien += int(reka[i+1][3])
+    print("sprawdzone pienidadze")
+    return dodpien
+
+###########################
+
+
+def cosiedzieje(akcja,ktora):
+    global faza
+    zagrane[len(zagrane)+1] = reka.pop(ktora)
+    if akcja =="wioska":
+        dod = wioska()
+        return dod
+    
+    if akcja == "piwnica":
+        faza  = "piwnica poczatek"
+        return 1,0,0
+
+def wioska():
+    akcjedod = 2 
+    dobieranie(1)
+    
+    return akcjedod,0,0
+
+def piwnica(nacisniete):
+    global faza
+    sort(reka)
+    try:
+        if nacisniete == []:
+            
+            for i in  range(len(reka)):
+                nacisniete.append(0)
+    except:
+        print("test")
+        nacisniete = [0]*len(reka)
+    
+ 
+    wyjscie =pygame.Rect (600,0,100,100)
+    pygame.draw.rect(SCREEN, BLUE, wyjscie)
+                
+    if event.type == pygame.MOUSEBUTTONDOWN:
+                     mouse_pos = event.pos
+                     if wyjscie.collidepoint(mouse_pos):
+                         faza = "koniec piwnicy"
+                         return nacisniete
+
+    
                     
-        if koniec =="stop":
-            break
-    if zakupy==0:
-        print("nie masz juz zakupow")
-    pieniadze -=ktora
-    return akcje,pieniadze,zakupy
+    sort(reka)
+    text("wybierz karty do odrzucenia. Koniec ->","",x=250,y=0)
+    
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_pos = event.pos
+        for square in squares:
+                    
+            ktora = square.handle_click(mouse_pos)
+            if ktora == 0:
+                            pass
+            else:
+                
+                print(ktora)
 
-##################################################################################
+                if nacisniete[ktora-1] ==0:
+                    nacisniete[ktora-1] =1
+                   
+                else :
+                    print("drugi raz")
+                    nacisniete[ktora-1] = 0
+                    SCREEN.fill(BLACK)
+    for i in range(len(nacisniete)):
+        if nacisniete [i] == 1:
+                    x,y= squares[i].get_pos()
+                    x = x - 2.5
+                    y = y -2.5
+                    podswietlenie = pygame.Rect(x,y,105,155)
+                    pygame.draw.rect(SCREEN, BLUE, podswietlenie)
 
 
+    
 
+    return nacisniete
 
+def koniec_piwnicy(nacisniete):
+    sort(reka)
+    count = 0
+    for i in range(len(nacisniete)):
+        if nacisniete [i] ==1:
+            odrzucone[len(odrzucone)+1] = reka.pop(i+1)
+            count +=1
+            print(odrzucone[len(odrzucone)])
+            print(i+1)
+    sort(reka)
+    dobieranie(count)
+    print(reka)
+    
+    
 
+########################
 
 
 class Square:
     def __init__(self, x, y, sx = 100, sy = 150, idi =0):
+        print(sx," ",sy)
         self.rect = pygame.Rect(x, y, sx,sy)
         self.color = RED
         self.idi = idi
@@ -305,100 +251,361 @@ class Square:
 
     def handle_click(self, pos):
         if self.rect.collidepoint(pos):
-            # Coś się dzieje -> zmiana koloru
+            
             wynik =square.idi
-            return square.idi
+            return self.idi
         else :
             return 0
+    def get_pos(self):
+        return self.rect.x,self.rect.y
+    def get_idi(self):
+        return self.idi
+sklep = []
+squares = []
+zagranetab = []
 
-# Funkcja do tworzenia kwadratów
 def create_squares(count):
+    global obrazki
     squares = []
     pol = []
     odl = 10
+    sort(reka)
     for i in range(count):
-        x = 850 + ((-1)**i)*i//2*(odl + 100) 
+        x = 450 + ((-1)**i)*i//2*(odl + 100) 
         
        
         pol.append(x)
         pol.sort()
     for i in range(count):
 
-        squares.append(Square(pol[i], 700, idi=i+1))
+        squares.append(Square(pol[i], 500, idi=i+1))
+        print(reka)
+        obrazki = rysunki(reka)
     return squares
 
+def tworzenie_zagranych(ile):
+    zagranet =[]
+    odl = 10
+    
+    for i in range(ile):
+        x = 200 + i *110
+        zagranet.append(Square(x, 340,idi =1))
+    print("\n", zagrane)
+    return zagranet
+
+def sklep_tworzenie():
+    global sklep_obrazki
+    sklep = []
+    p_zy= 0
+    p_sy = 0
+    p_ax = [0]*3
+    p_ay = 0
+
+    koszty0={}
+    koszty1={}
+    koszty2={}
+    for i in range(len(karty)):
+        print (i)
+        if karty[i+1][2] == "zwyciestwo":
+
+            x = 100
+            y = 500- p_zy*170
+            p_zy = p_zy +1
+            sklep.append(Square(x,y,idi=karty[i+1][0]))
+        elif karty[i+1][2] == "skarb":
+            x = 220
+            y =500- p_sy*170
+            p_sy = p_sy +1
+            sklep.append(Square(x,y,idi=karty[i+1][0]))
+        elif karty[i+1][2] == "akcja":
+            if int(karty[i+1][1]) <= 3:
+                y = 500 
+                rzad = 0
+                
+                x = 340 + p_ax[rzad] *120
+                p_ax[rzad] += 1
+                koszty0[len(koszty0)+1]=[karty[i+1][1], x,y,karty[i+1][0]] 
+            
+            elif int(karty[i+1][1]) ==4:
+                y = 500-170
+                rzad = 1
+               
+                x = 340 + p_ax[rzad] *120
+                p_ax[rzad] += 1
+                koszty1[len(koszty1)+1]=[karty[i+1][1],  x,y,karty[i+1][0]] 
+                
+            elif int(karty[i+1][1])<4:
+                y = 500-2*170
+                rzad =2
+                
+                x = 340 + p_ax[rzad] *120
+                p_ax[rzad] += 1
+                koszty1[len(koszty2)+1]=[karty[i+1][1],  x,y,karty[i+1][0]] 
+                
+
+    koszty0=sortowaniesklepu(koszty0)
+    koszty1 = sortowaniesklepu(koszty1)
+    koszty2 = sortowaniesklepu(koszty2)
+
+    for i in range(len(koszty0)):
+        print(koszty0[i+1][2])
+        sklep.append(Square( koszty0[i+1][1],koszty0[i+1][2], idi =koszty0[i+1][3]))
+        
+    for i in range(len(koszty1)):
+        sklep.append(Square( koszty1[i+1][1],koszty1[i+1][2], idi =koszty1[i+1][3]))
+    for i in range(len(koszty2)):
+        sklep.append(Square( koszty2[i+1][1],koszty2[i+1][2], idi =koszty2[i+1][3]))
+    
+            
+         
+    return sklep
+
+def sortowaniesklepu(tab):
+
+    for i in range(len(tab)):
+        for j in range(i,len(tab)):
+            try:
+                if int(tab[i+1][0]) <  int(tab[j+1][0]):
+                    a = tab[i+1][0]
+                    tab[i+1][0] = tab[j+1][0]
+                    tab[j+1][0] =a 
+
+            except: pass
+
+    return tab
+def exit():
+                wyjscie =pygame.Rect (0,0,250,60)
+                pygame.draw.rect(SCREEN, RED, wyjscie)
+                text("","Przejdz do nastepnej fazy",0,10)
+                
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                     mouse_pos = event.pos
+                     if wyjscie.collidepoint(mouse_pos):
+                         return True
+                else :
+                    return False
+def text(nazwa,co,x,y):
+    pygame.font.init()
+    font = pygame.font.SysFont('arial', 25)
+    text = font.render(nazwa +str(co), True, WHITE)
+    SCREEN.blit(text, (x, y))
+    return text
+
+def rysunki(co):
+    global sklep
+    print(sklep)
+    obrazki = {}
+    sort(co)
+    if co == reka:
+        tab = squares.copy()
+        
+    if co ==zagrane:
+        tab = zagranetab.copy()
+    if co == karty:
+        print("sklep")
+        tab = sklep.copy()
+        print(sklep)
+    print("tab",tab)
+    for i in range(len(co)):
+            try:
+                if co == karty:
+                    nazwa = tab[i].get_idi()+".jpg"
+                else:
+                    nazwa = co[i+1][0]+".jpg"
+                
+                obrazek = pygame.image.load(str(nazwa))  
+                obrazek = pygame.transform.scale(obrazek, (100, 150))
+                obrazek_get = obrazek.get_rect()
+                obrazek_get.topleft = tab[i].get_pos()
+                obrazki[len(obrazki)+1] = [obrazek,obrazek_get]
+                
+               
+            except:
+                pass
+    return obrazki
 
 
-clock = pygame.time.Clock()
-
-   
 
 
+##########################
 
-###################################################################################
-
-karty = {
-    1:["wioska","3","akcja"],
-
-
-    2:["miedziaki","0","skarb","1"],
-
-    3:["posiadlosci","2","zwyciestwo","1"]
-    }
-deck ={}
-for i in range(1,8):
-    deck[i] = karty[2]
-for i in range(8,11):
-    deck[i]=karty[3]
-
-deckcopy = {}
-for i in range(len(deck)):
-    deckcopy[i+1]  = deck[i+1]
-dlugosc = len(deck)
-reka = {}
-odrzucone = {}
-zagrane = {}
-akcja = 0
-pieniadz = 0
-t=[]
-
-
-dlugosc = len(deckcopy)
-t.clear()
-for i in range(dlugosc):
-
-        t.append(i+1)
-random.shuffle(t)
-print(t)
-dobieraniereki()
+SCREEN = pygame.display.set_mode((1000, 700))  # szerokość x wysokość
+pygame.display.set_caption("aa")
+print(sklep)
+zmiana = 0
+running = True
+faza = "ruch"
+akcja =1
+kartyakcji = 0
+pieniadze = 0 
+zakupy = 1
+obrazki ={}
+zagrane_obrazki = {}
+sklep_obrazki = {}
+tasowanie()
+dobieranie(5)
 reka[1] = karty[1]
-squares = create_squares(len(reka))
-print(reka)
+reka[2] = karty[2]
+
+print("dlugosc = ", len(reka))
+
+
+print(zagrane)
+checked = False
+###################
+
+
+print(reka,deck)
+
 while running:
-        SCREEN.fill(WHITE)
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:  # Kliknięcie X
+            running = False
+        text("Akcje: ",akcja,800,0)
+        text("Pieniadze: ", pieniadze,800,50)
+        text("Zakupy: ",zakupy,800,100)
+        if faza =="ruch":
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+            if checked == False:
 
-            # Obsługa kliknięcia myszką
+
+                kartyakcji += czyakjca()
+                
+                
+                checked = True
+            if kartyakcji == 0:
+                #faza = "koniec ruchu"
+                pass
+            
+            if exit()==True:
+                         faza ="koniec ruchu"
+
+
+            if squares ==[]:
+                squares = create_squares(len(reka))
+            if obrazki == {}:
+                obrazki = rysunki(reka)
+            
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = event.pos
+                    for square in squares:
+                    
+                    
+                        ktora = square.handle_click(mouse_pos)
+                        if ktora == 0:
+                            pass
+                        else:
+                            print (ktora )
+                            if  reka[ktora][2] == "akcja":
+                                dod = cosiedzieje(reka[ktora][0],ktora)
+                                akcja += dod[0]
+                                pieniadze += dod[1]
+                                zakupy += dod[2]
+                                zagranetab = tworzenie_zagranych(len(zagrane))
+                                zagrane_obrazki = rysunki(zagrane)
+                                print("zagrane", zagrane_obrazki)
+                                print(zagranetab)
+                                squares = create_squares(len(reka))
+                                SCREEN.fill(BLACK)
+                                print(reka)
+                                print(squares)
+                                akcja +=-1
+                                
+            for square in zagranetab:
+                square.draw(SCREEN)
+            for i in range(len(zagrane_obrazki)):
+                SCREEN.blit(zagrane_obrazki[i+1][0], zagrane_obrazki[i+1][1] )
+                
+            for square in squares:
+                square.draw(SCREEN)
+            for i in  range(len(obrazki)):
+                SCREEN.blit(obrazki[i+1][0],obrazki[i+1][1])
+        elif faza == "piwnica poczatek":
+            nacisniete = piwnica(nacisniete)
+            for square in zagranetab:
+                square.draw(SCREEN)
+                
+            for square in squares:
+                square.draw(SCREEN)
+            for i in range(len(zagrane_obrazki)):
+                SCREEN.blit(zagrane_obrazki[i+1][0], zagrane_obrazki[i+1][1] )
+
+            obrazki = rysunki(reka)
+            for i in  range(len(obrazki)):
+                    SCREEN.blit(obrazki[i+1][0],obrazki[i+1][1])
+                    
+        elif faza =="koniec piwnicy":
+            koniec_piwnicy( nacisniete)
+            SCREEN.fill(BLACK)
+            squares = create_squares(len(reka))
+            faza = "ruch"
+        elif faza == "koniec ruchu":
+            SCREEN.fill(BLACK)
+            pieniadze += sprpieniedzy()
+            time.sleep(0)
+            faza = "kupowanie"
+
+        elif faza == "kupowanie":
+            ktora =0
+            
+            if sklep == []:
+                sklep = sklep_tworzenie()
+                print(sklep)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = event.pos
-                for square in squares:
+                for square in sklep:
                     
                     
-                    ktora = square.handle_click(mouse_pos)
-                    if ktora == 0:
-                        pass
-                    else:
-                        print (reka[ktora ])
+                        ktora = square.handle_click(mouse_pos)
+                        for i in range(len(karty)):
+                            print("test")
+                            if karty[i+1][0] == ktora:
+                                
+                                jakakarta = i+1
+                                print("jaka karta: ",jakakarta)
+                        print (ktora)
+                        if ktora == 0:
+                            pass
+                      
+                        elif int(karty[jakakarta][1])<= pieniadze:
+                            print (ktora)
+                            odrzucone[len(odrzucone)+1] = karty[int(jakakarta)]
+                            zakupy += (-1)
+                            pieniadze +=( -int(karty[jakakarta][1]))
+                            print(pieniadze, odrzucone)
+            if sklep_obrazki == {}:
+                sklep_obrazki = rysunki(karty)
+            for square in sklep:
+                    square.draw(SCREEN)
+            
+            for i in  range(len(sklep_obrazki)):
+                SCREEN.blit(sklep_obrazki[i+1][0],sklep_obrazki[i+1][1])
+            if zakupy == 0 or exit()==True:
+                faza = "koniec kupowania"
 
-        # Rysowanie kwadratów
-        for square in squares:
-            square.draw(SCREEN)
+        
+        elif faza =="koniec kupowania":
+            akcja  =1 
+            pieniadze = 0 
+            zakupy = 1
+            zrzucanie("dozakupu")
+            SCREEN.fill(BLACK)
+            time.sleep(0.5)
+            zrzucanie("cala")
+            zagrane.clear()
+            zagranetab.clear()
+            zagrane_obrazki.clear()
+            dobieranie(5)
+            
+            faza = "ruch"
+           
 
-        pygame.display.flip()
-        clock.tick(60)
+            
+       
+        pygame.display.flip()  # Aktualizacja ekranu
 
-  
-
+# Zakończenie pygame
+pygame.quit()
+sys.exit()
